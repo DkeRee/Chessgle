@@ -10,6 +10,20 @@ public class Board extends BoardBackbone {
 	}
 	
 	public void setup() {
+		super.whiteKingRights = false;
+		super.whiteLeftRookRights = false;
+		super.whiteRightRookRights = false;
+		
+		super.blackKingRights = false;
+		super.blackLeftRookRights = false;
+		super.blackRightRookRights = false;
+		
+		this.board[1][1] = PAWN * BLACK;
+		this.board[5][5] = KING * BLACK;
+		this.board[4][2] = PAWN * WHITE;
+		this.board[7][7] = KING * WHITE;
+		
+		/*
 		//first back rank of black
 		this.board[0][0] = ROOK * BLACK;
 		this.board[0][1] = KNIGHT * BLACK;
@@ -39,6 +53,7 @@ public class Board extends BoardBackbone {
 		this.board[7][5] = BISHOP * WHITE;
 		this.board[7][6] = KNIGHT * WHITE;
 		this.board[7][7] = ROOK * WHITE;
+		*/
 	}
 	
 	public Board clone() {

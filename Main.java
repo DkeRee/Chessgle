@@ -6,9 +6,9 @@ public class Main {
 		boolean playing = true;
 		
 		Board board = new Board();
-		System.out.println(board.getMoves(10));
 		
 		while (playing) {
+			System.out.println(board.getMoves(10));
 			board.printBoard();
 			
 			String input = scanner.nextLine();

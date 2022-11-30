@@ -21,6 +21,11 @@ public abstract class BoardBackbone {
 	protected boolean blackLeftRookRights = true;
 	protected boolean blackRightRookRights = true;
 	
+	//en passant
+	protected boolean canEnPassant = false;
+	protected int enPassantRow = -1;
+	protected int enPassantColumn = -1;
+	
 	public int getOppositeColor(int color) {
 		return color == WHITE ? BLACK : WHITE;
 	}
@@ -83,6 +88,18 @@ public abstract class BoardBackbone {
 				}
 			}
 		}
+		
+		//CHECK EN PASSANT
+		if (pieceInfo[0] == PAWN && Math.abs(move.getTo().getY() - move.getFrom().getY()) == 2) {
+			//set row
+			//if it is a pawn and the pawn moves 2 squares forward for the first time, it has a chance of being en passant
+			this.canEnPassant = true;
+			this.enPassantRow = move.getTo().getY();
+			this.enPassantColumn = move.getTo().getX();
+		} else {
+			//remove info
+			this.canEnPassant = false;
+		}
 				
 		this.playUnchecked(board, move);
 	}
@@ -123,7 +140,20 @@ public abstract class BoardBackbone {
 				}
 			} else {
 				//not rooking :(
-				board[move.getTo().getY()][move.getTo().getX()] = move.getPiece();
+				boolean isEnPassant = pieceInfo[0] == PAWN && move.getLoud() && board[move.getTo().getY()][move.getTo().getX()] == NONE;
+				
+				if (isEnPassant) {
+					//EN PASSANT WOO
+					
+					//remove enemy pawn
+					board[this.enPassantRow][this.enPassantColumn] = NONE;
+					
+					//perform capture
+					board[move.getTo().getY()][move.getTo().getX()] = move.getPiece();
+				} else {
+					//normie move :P
+					board[move.getTo().getY()][move.getTo().getX()] = move.getPiece();
+				}
 			}			
 		}
 	}
@@ -524,6 +554,25 @@ public abstract class BoardBackbone {
 								moves.add(move);
 							}
 						}	
+					}
+				} else {
+					//Chance of en passant!
+					if (this.canEnPassant) {
+						if (loudSquare.getX() == this.enPassantColumn && from.getY() == this.enPassantRow) {
+							//if our target square is on the same column as the en passant chance
+							//and if our current position is at the same row as the en passant chance
+							//THEN DO IT!!! WOOOOOOOOOOOO
+							
+							Move move = new Move(from, loudSquare, piece, true);
+							
+							Board boardClone = this.upperClone(board);
+							
+							this.playUnchecked(boardClone.getBoard(), move);
+							
+							if (!this.isChecked(boardClone.getBoard(), color)) {
+								moves.add(move);
+							}
+						}
 					}
 				}
 			}
