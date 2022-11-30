@@ -9,7 +9,7 @@ public class Board extends BoardBackbone {
 		this.setup();
 	}
 	
-	public void setup() {		
+	public void setup() {
 		//first back rank of black
 		this.board[0][0] = ROOK * BLACK;
 		this.board[0][1] = KNIGHT * BLACK;
@@ -186,7 +186,7 @@ public class Board extends BoardBackbone {
 		Move move = this.findMove(from, to, promotion);
 		
 		if (move != null) {
-			super.playUnchecked(this.board, move);
+			super.playChecked(this.board, move);
 			this.colorPlaying = super.getOppositeColor(this.colorPlaying);
 		} else {
 			System.out.println("This move is invalid.");

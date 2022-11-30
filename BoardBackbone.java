@@ -54,15 +54,77 @@ public abstract class BoardBackbone {
 		return info;
 	}
 	
+	public void playChecked(int[][] board, Move move) {
+		int[] pieceInfo = this.getPieceInfo(move.getPiece());		
+		//CHECK ROOKING
+		if (pieceInfo[0] == KING) {
+			if (pieceInfo[1] == WHITE) {
+				this.whiteKingRights = false;
+			} else {
+				this.blackKingRights = false;
+			}
+		}
+		
+		if (pieceInfo[0] == ROOK) {
+			//rooks are always gonna start from start pos
+			if (move.getFrom().getX() == 0) {
+				//left rook
+				if (pieceInfo[1] == WHITE) {
+					this.whiteLeftRookRights = false;
+				} else {
+					this.blackLeftRookRights = false;
+				}
+			} else {
+				//right rook
+				if (pieceInfo[1] == WHITE) {
+					this.whiteRightRookRights = false;
+				} else {
+					this.blackRightRookRights = false;
+				}
+			}
+		}
+				
+		this.playUnchecked(board, move);
+	}
+	
 	public void playUnchecked(int[][] board, Move move) {
 		int[] pieceInfo = this.getPieceInfo(move.getPiece());
 		
 		board[move.getFrom().getY()][move.getFrom().getX()] = NONE;
-		
+				
 		if (move.getPromotion() != -1) {
 			board[move.getTo().getY()][move.getTo().getX()] = move.getPromotion() * pieceInfo[1];
 		} else {
-			board[move.getTo().getY()][move.getTo().getX()] = move.getPiece();
+			boolean isKing = pieceInfo[0] == KING;
+			boolean isRookingAmount = Math.abs(move.getTo().getX() - move.getFrom().getX()) > 1;
+
+			if (isKing && isRookingAmount) {
+				//define is rooking if king moves more than one space to the left or right
+				int rookingAmountNotAbs = move.getTo().getX() - move.getFrom().getX();
+								
+				if (rookingAmountNotAbs > 0) {
+					//king side rooking to the right
+					
+					//move king
+					board[move.getTo().getY()][move.getTo().getX()] = move.getPiece();
+
+					//move rook
+					board[move.getFrom().getY()][move.getFrom().getX() + 3] = NONE;
+					board[move.getFrom().getY()][move.getFrom().getX() + 1] = ROOK * pieceInfo[1];
+				} else {
+					//queen side rooking to the left
+					
+					//move king
+					board[move.getTo().getY()][move.getTo().getX()] = move.getPiece();
+					
+					//move rook
+					board[move.getFrom().getY()][move.getFrom().getX() - 4] = NONE;
+					board[move.getFrom().getY()][move.getFrom().getX() - 1] = ROOK * pieceInfo[1];
+				}
+			} else {
+				//not rooking :(
+				board[move.getTo().getY()][move.getTo().getX()] = move.getPiece();
+			}			
 		}
 	}
 	
@@ -862,6 +924,85 @@ public abstract class BoardBackbone {
 					
 					if (!this.isChecked(newBoard.getBoard(), ourColor)) {
 						moves.add(move);
+					}
+				}
+			}
+		}
+		
+		//ROOKING!!!!!! SHAKKAR23 GAMING!!!
+		boolean inCheck = this.isChecked(board, ourColor);
+		boolean ourKingRights = false;
+		boolean ourLeftRook = false;
+		boolean ourRightRook = false;
+		
+		if (ourColor == WHITE) {
+			ourKingRights = this.whiteKingRights;
+			ourLeftRook = this.whiteLeftRookRights;
+			ourRightRook = this.whiteRightRookRights;
+		} else {
+			ourKingRights = this.blackKingRights;
+			ourLeftRook = this.blackLeftRookRights;
+			ourRightRook = this.blackRightRookRights;
+		}
+		
+		if (!inCheck && ourKingRights) {
+			//king side rooking
+			if (ourRightRook) {
+				int rookTile = board[from.getY()][from.getX() + 3];
+				int[] rookTileInfo = this.getPieceInfo(rookTile);
+				
+				if (rookTileInfo[0] == ROOK && rookTileInfo[1] == ourColor) {
+					//if our rook is still there
+					Square rightOne = new Square(from.getX() + 1, from.getY());
+					Square rightTwo = new Square(from.getX() + 2, from.getY());
+										
+					if (board[rightOne.getY()][rightOne.getX()] == NONE && board[rightTwo.getY()][rightTwo.getX()] == NONE) {
+						//if there is nothing in the way
+						Move one = new Move(from, rightOne, piece, false);
+						Move two = new Move(from, rightTwo, piece, false);
+						
+						Board boardCloneOne = this.upperClone(board);
+						Board boardCloneTwo = this.upperClone(board);
+						
+						this.playUnchecked(boardCloneOne.getBoard(), one);
+						this.playUnchecked(boardCloneTwo.getBoard(), two);
+						
+						if (
+							!this.isChecked(boardCloneOne.getBoard(), ourColor) 
+							&& !this.isChecked(boardCloneTwo.getBoard(), ourColor)) 
+						{
+							moves.add(two);
+						}
+					}
+				}
+			}
+			
+			//queen side rooking
+			if (ourLeftRook) {
+				int rookTile = board[from.getY()][from.getX() - 4];
+				int[] rookTileInfo = this.getPieceInfo(rookTile);
+				
+				if (rookTileInfo[0] == ROOK && rookTileInfo[1] == ourColor) {
+					//if our rook is still here
+					Square leftOne = new Square(from.getX() - 1, from.getY());
+					Square leftTwo = new Square(from.getX() - 2, from.getY());
+					
+					if (board[leftOne.getY()][leftOne.getX()] == NONE && board[leftTwo.getY()][leftTwo.getX()] == NONE) {
+						//if there is nothing in the way
+						Move one = new Move(from, leftOne, piece, false);
+						Move two = new Move(from, leftTwo, piece, false);
+						
+						Board boardCloneOne = this.upperClone(board);
+						Board boardCloneTwo = this.upperClone(board);
+						
+						this.playUnchecked(boardCloneOne.getBoard(), one);
+						this.playUnchecked(boardCloneTwo.getBoard(), two);
+						
+						if (
+							!this.isChecked(boardCloneOne.getBoard(), ourColor)	
+							&& !this.isChecked(boardCloneTwo.getBoard(), ourColor)) {
+							moves.add(two);
+						}
 					}
 				}
 			}
