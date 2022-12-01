@@ -1,8 +1,8 @@
 import java.util.Vector;
 
 public class Board extends BoardBackbone {
-	int colorPlaying = WHITE;
-	int[][] board;
+	private int colorPlaying = WHITE;
+	private int[][] board;
 	
 	public Board() {
 		board = new int[8][8];
@@ -10,6 +10,7 @@ public class Board extends BoardBackbone {
 	}
 	
 	public void setup() {
+		/*
 		super.whiteKingRights = false;
 		super.whiteLeftRookRights = false;
 		super.whiteRightRookRights = false;
@@ -18,12 +19,13 @@ public class Board extends BoardBackbone {
 		super.blackLeftRookRights = false;
 		super.blackRightRookRights = false;
 		
-		this.board[1][1] = PAWN * BLACK;
-		this.board[5][5] = KING * BLACK;
-		this.board[4][2] = PAWN * WHITE;
-		this.board[7][7] = KING * WHITE;
+		//this.board[1][1] = PAWN * BLACK;
+		//this.board[4][5] = BISHOP * WHITE;
+		//this.board[5][4] = BISHOP * BLACK;
+		//this.board[4][2] = PAWN * WHITE;
+		//this.board[7][7] = KING * WHITE;
+		 */
 		
-		/*
 		//first back rank of black
 		this.board[0][0] = ROOK * BLACK;
 		this.board[0][1] = KNIGHT * BLACK;
@@ -53,7 +55,6 @@ public class Board extends BoardBackbone {
 		this.board[7][5] = BISHOP * WHITE;
 		this.board[7][6] = KNIGHT * WHITE;
 		this.board[7][7] = ROOK * WHITE;
-		*/
 	}
 	
 	public Board clone() {
@@ -65,7 +66,8 @@ public class Board extends BoardBackbone {
 			super.whiteLeftRookRights,
 			super.blackKingRights,
 			super.blackRightRookRights,
-			super.blackLeftRookRights
+			super.blackLeftRookRights,
+			this.colorPlaying
 		);
 				
 		return newBoard;
@@ -84,7 +86,7 @@ public class Board extends BoardBackbone {
 		}
 	}
 	
-	public void setRights(boolean wks, boolean wrr, boolean wlr, boolean bks, boolean brr, boolean blr) {
+	public void setRights(boolean wks, boolean wrr, boolean wlr, boolean bks, boolean brr, boolean blr, int colorPlaying) {
 		super.whiteKingRights = wks;
 		super.whiteRightRookRights = wrr;
 		super.whiteLeftRookRights = wlr;
@@ -92,9 +94,10 @@ public class Board extends BoardBackbone {
 		super.blackKingRights = bks;
 		super.blackLeftRookRights = brr;
 		super.blackRightRookRights = blr;
+		this.colorPlaying = colorPlaying;
 	}
 	
-	public boolean isCheckedTest() {
+	public boolean isThisChecked() {
 		return super.isChecked(this.board, WHITE);
 	}
 	
@@ -125,7 +128,7 @@ public class Board extends BoardBackbone {
 		}
 	}
 	
-	public Vector<Move> getMoves(int color) {
+	public Vector<Move> getMoves() {
 		Vector<Move> moves = new Vector<Move>();
 		
 		for (int y = 0; y < this.board.length; y++) {
@@ -133,7 +136,7 @@ public class Board extends BoardBackbone {
 				int piece = this.board[y][x];
 				int[] pieceInfo = super.getPieceInfo(piece);
 				
-				if (pieceInfo[1] == color) {
+				if (pieceInfo[1] == this.colorPlaying) {
 					Square square = new Square(x, y);
 					this.pushPieceMoves(this.board, piece, moves, square);	
 				}
@@ -144,7 +147,7 @@ public class Board extends BoardBackbone {
 	}
 	
 	public Move findMove(Square from, Square to, String promotion) {
-		Vector<Move> moves = this.getMoves(this.colorPlaying);
+		Vector<Move> moves = this.getMoves();
 		
 		for (int i = 0; i < moves.size(); i++) {
 			boolean matchingFrom = moves.elementAt(i).getFrom().getX() == from.getX() && moves.elementAt(i).getFrom().getY() == from.getY();
@@ -206,6 +209,15 @@ public class Board extends BoardBackbone {
 		} else {
 			System.out.println("This move is invalid.");
 		}
+	}
+	
+	public void playMoveSelf(Move move) {
+		super.playChecked(this.board, move);
+		this.colorPlaying = super.getOppositeColor(this.colorPlaying);
+	}
+	
+	public int getColorPlaying() {
+		return this.colorPlaying;
 	}
 	
 	public void printBoard() {

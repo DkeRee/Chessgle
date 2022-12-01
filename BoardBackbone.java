@@ -30,7 +30,7 @@ public abstract class BoardBackbone {
 		return color == WHITE ? BLACK : WHITE;
 	}
 	
-	public Board upperClone(int[][] board) {
+	public Board upperClone(int[][] board, int colorPlaying) {
 		Board newBoard = new Board();
 		newBoard.setBoard(board);
 		newBoard.setRights(
@@ -39,7 +39,8 @@ public abstract class BoardBackbone {
 			this.whiteLeftRookRights,
 			this.blackKingRights,
 			this.blackRightRookRights,
-			this.blackLeftRookRights
+			this.blackLeftRookRights,
+			colorPlaying
 		);
 				
 		return newBoard;
@@ -142,7 +143,7 @@ public abstract class BoardBackbone {
 				//not rooking :(
 				boolean isEnPassant = pieceInfo[0] == PAWN && move.getLoud() && board[move.getTo().getY()][move.getTo().getX()] == NONE;
 				
-				if (isEnPassant) {
+				if (isEnPassant && this.canEnPassant) {
 					//EN PASSANT WOO
 					
 					//remove enemy pawn
@@ -474,7 +475,7 @@ public abstract class BoardBackbone {
 				for (int i = KNIGHT; i < KING; i++) {
 					Move promotion = new Move(from, quietTo, piece, false, i);
 
-					Board boardClone = this.upperClone(board);
+					Board boardClone = this.upperClone(board, color);
 					this.playUnchecked(boardClone.getBoard(), promotion);
 					
 					if (!this.isChecked(boardClone.getBoard(), color)) {
@@ -502,7 +503,7 @@ public abstract class BoardBackbone {
 					if (board[to.getY()][to.getX()] == NONE) {
 						Move move = new Move(from, to, piece, false);
 						
-						Board boardClone = this.upperClone(board);
+						Board boardClone = this.upperClone(board, color);
 						this.playUnchecked(boardClone.getBoard(), move);
 						
 						if (!this.isChecked(boardClone.getBoard(), color)) {
@@ -532,7 +533,7 @@ public abstract class BoardBackbone {
 							for (int o = KNIGHT; o < KING; o++) {
 								Move promotion = new Move(from, loudSquare, piece, true, o);
 
-								Board boardClone = this.upperClone(board);
+								Board boardClone = this.upperClone(board, color);
 								this.playUnchecked(boardClone.getBoard(), promotion);
 								
 								if (!this.isChecked(boardClone.getBoard(), color)) {
@@ -546,7 +547,7 @@ public abstract class BoardBackbone {
 							
 							Move move = new Move(from, loudSquare, piece, true);
 							
-							Board boardClone = this.upperClone(board);
+							Board boardClone = this.upperClone(board, color);
 							
 							this.playUnchecked(boardClone.getBoard(), move);
 							
@@ -565,7 +566,7 @@ public abstract class BoardBackbone {
 							
 							Move move = new Move(from, loudSquare, piece, true);
 							
-							Board boardClone = this.upperClone(board);
+							Board boardClone = this.upperClone(board, color);
 							
 							this.playUnchecked(boardClone.getBoard(), move);
 							
@@ -600,7 +601,7 @@ public abstract class BoardBackbone {
 					//quiet move
 					Move move = new Move(from, to, piece, false);
 					
-					Board boardClone = this.upperClone(board);
+					Board boardClone = this.upperClone(board, ourColor);
 					this.playUnchecked(boardClone.getBoard(), move);
 					
 					if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -612,7 +613,7 @@ public abstract class BoardBackbone {
 						//we aren't stepping on any of our own pieces
 						Move move = new Move(from, to, piece, true);
 						
-						Board boardClone = this.upperClone(board);
+						Board boardClone = this.upperClone(board, ourColor);
 						this.playUnchecked(boardClone.getBoard(), move);
 						
 						if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -642,7 +643,7 @@ public abstract class BoardBackbone {
 				//quiet move
 				Move move = new Move(from, to, piece, false);
 				
-				Board boardClone = this.upperClone(board);
+				Board boardClone = this.upperClone(board, ourColor);
 				this.playUnchecked(boardClone.getBoard(), move);
 				
 				if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -653,7 +654,7 @@ public abstract class BoardBackbone {
 				if (targetInfo[1] != ourColor) {
 					Move move = new Move(from, to, piece, true);
 				
-					Board boardclone = this.upperClone(board);
+					Board boardclone = this.upperClone(board, ourColor);
 					this.playUnchecked(boardclone.getBoard(), move);
 					
 					if (!this.isChecked(boardclone.getBoard(), ourColor)) {
@@ -682,7 +683,7 @@ public abstract class BoardBackbone {
 				//quiet move
 				Move move = new Move(from, to, piece, false);
 				
-				Board boardClone = this.upperClone(board);
+				Board boardClone = this.upperClone(board, ourColor);
 				this.playUnchecked(boardClone.getBoard(), move);
 				
 				if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -693,7 +694,7 @@ public abstract class BoardBackbone {
 				if (targetPieceInfo[1] != ourColor) {
 					Move move = new Move(from, to, piece, true);
 
-					Board boardClone = this.upperClone(board);
+					Board boardClone = this.upperClone(board, ourColor);
 					this.playUnchecked(boardClone.getBoard(), move);
 					
 					if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -723,7 +724,7 @@ public abstract class BoardBackbone {
 				//quiet move
 				Move move = new Move(from, to, piece, false);
 				
-				Board boardClone = this.upperClone(board);
+				Board boardClone = this.upperClone(board, ourColor);
 				this.playUnchecked(boardClone.getBoard(), move);
 				
 				if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -734,7 +735,7 @@ public abstract class BoardBackbone {
 				if (targetPieceInfo[1] != ourColor) {
 					Move move = new Move(from, to, piece, true);
 					
-					Board boardClone = this.upperClone(board);
+					Board boardClone = this.upperClone(board, ourColor);
 					this.playUnchecked(boardClone.getBoard(), move);
 					
 					if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -755,7 +756,7 @@ public abstract class BoardBackbone {
 			int incX = from.getX() - swInc;
 			int incY = from.getY() + swInc;
 			int targetPiece = board[incY][incX];
-			int[] targetPieceInfo = this.getPieceInfo(piece);
+			int[] targetPieceInfo = this.getPieceInfo(targetPiece);
 			
 			Square to = new Square(incX, incY);
 			
@@ -763,7 +764,7 @@ public abstract class BoardBackbone {
 				//quiet move
 				Move move = new Move(from, to, piece, false);
 				
-				Board boardClone = this.upperClone(board);
+				Board boardClone = this.upperClone(board, ourColor);
 				this.playUnchecked(boardClone.getBoard(), move);
 				
 				if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -774,9 +775,9 @@ public abstract class BoardBackbone {
 				if (targetPieceInfo[1] != ourColor) {
 					Move move = new Move(from, to, piece, true);
 					
-					Board boardClone = this.upperClone(board);
+					Board boardClone = this.upperClone(board, ourColor);
 					this.playUnchecked(boardClone.getBoard(), move);
-					
+										
 					if (!this.isChecked(boardClone.getBoard(), ourColor)) {
 						moves.add(move);
 					}
@@ -806,7 +807,7 @@ public abstract class BoardBackbone {
 					//quiet move
 					Move move = new Move(from, to, piece, false);
 					
-					Board boardClone = this.upperClone(board);
+					Board boardClone = this.upperClone(board, ourColor);
 					this.playUnchecked(boardClone.getBoard(), move);
 					
 					if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -817,7 +818,7 @@ public abstract class BoardBackbone {
 					if (targetPieceInfo[1] != ourColor) {
 						Move move = new Move(from, to, piece, true);
 						
-						Board boardClone = this.upperClone(board);
+						Board boardClone = this.upperClone(board, ourColor);
 						this.playUnchecked(boardClone.getBoard(), move);
 						
 						if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -843,7 +844,7 @@ public abstract class BoardBackbone {
 					//quiet move
 					Move move = new Move(from, to, piece, false);
 					
-					Board boardClone = this.upperClone(board);
+					Board boardClone = this.upperClone(board, ourColor);
 					this.playUnchecked(boardClone.getBoard(), move);
 					
 					if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -854,7 +855,7 @@ public abstract class BoardBackbone {
 					if (targetPieceInfo[1] != ourColor) {
 						Move move = new Move(from, to, piece, true);
 						
-						Board boardClone = this.upperClone(board);
+						Board boardClone = this.upperClone(board, ourColor);
 						this.playUnchecked(boardClone.getBoard(), move);
 						
 						if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -881,7 +882,7 @@ public abstract class BoardBackbone {
 					//quiet move
 					Move move = new Move(from, to, piece, false);
 					
-					Board boardClone = this.upperClone(board);
+					Board boardClone = this.upperClone(board, ourColor);
 					this.playUnchecked(boardClone.getBoard(), move);
 					
 					if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -892,7 +893,7 @@ public abstract class BoardBackbone {
 					if (targetPieceInfo[1] != ourColor) {
 						Move move = new Move(from, to, piece, true);
 						
-						Board boardClone = this.upperClone(board);
+						Board boardClone = this.upperClone(board, ourColor);
 						this.playUnchecked(boardClone.getBoard(), move);
 						
 						if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -918,7 +919,7 @@ public abstract class BoardBackbone {
 					//quiet move
 					Move move = new Move(from, to, piece, false);
 					
-					Board boardClone = this.upperClone(board);
+					Board boardClone = this.upperClone(board, ourColor);
 					this.playUnchecked(boardClone.getBoard(), move);
 					
 					if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -929,7 +930,7 @@ public abstract class BoardBackbone {
 					if (targetPieceInfo[1] != ourColor) {
 						Move move = new Move(from, to, piece, true);
 						
-						Board boardClone = this.upperClone(board);
+						Board boardClone = this.upperClone(board, ourColor);
 						this.playUnchecked(boardClone.getBoard(), move);
 						
 						if (!this.isChecked(boardClone.getBoard(), ourColor)) {
@@ -968,7 +969,7 @@ public abstract class BoardBackbone {
 				if (targetPieceInfo[1] != ourColor || targetPiece == NONE) {
 					Move move = new Move(from, to, piece, targetPiece != NONE);
 					
-					Board newBoard = this.upperClone(board);
+					Board newBoard = this.upperClone(board, ourColor);
 					this.playUnchecked(newBoard.getBoard(), move);
 					
 					if (!this.isChecked(newBoard.getBoard(), ourColor)) {
@@ -1010,8 +1011,8 @@ public abstract class BoardBackbone {
 						Move one = new Move(from, rightOne, piece, false);
 						Move two = new Move(from, rightTwo, piece, false);
 						
-						Board boardCloneOne = this.upperClone(board);
-						Board boardCloneTwo = this.upperClone(board);
+						Board boardCloneOne = this.upperClone(board, ourColor);
+						Board boardCloneTwo = this.upperClone(board, ourColor);
 						
 						this.playUnchecked(boardCloneOne.getBoard(), one);
 						this.playUnchecked(boardCloneTwo.getBoard(), two);
@@ -1041,8 +1042,8 @@ public abstract class BoardBackbone {
 						Move one = new Move(from, leftOne, piece, false);
 						Move two = new Move(from, leftTwo, piece, false);
 						
-						Board boardCloneOne = this.upperClone(board);
-						Board boardCloneTwo = this.upperClone(board);
+						Board boardCloneOne = this.upperClone(board, ourColor);
+						Board boardCloneTwo = this.upperClone(board, ourColor);
 						
 						this.playUnchecked(boardCloneOne.getBoard(), one);
 						this.playUnchecked(boardCloneTwo.getBoard(), two);

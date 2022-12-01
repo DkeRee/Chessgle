@@ -7,8 +7,17 @@ public class Main {
 		
 		Board board = new Board();
 		
+		//PERFT
+		Perft perft = new Perft();
+		perft.run(board, 0);
+		System.out.println(perft.getNodes());
+		System.out.println(perft.getCaptures());
+		System.out.println(perft.getChecks());
+		//perft.printPerftLog();
+		
+		/*
 		while (playing) {
-			System.out.println(board.getMoves(10));
+			System.out.println(board.getMoves());
 			board.printBoard();
 			
 			String input = scanner.nextLine();
@@ -19,5 +28,6 @@ public class Main {
 				playing = false;
 			}
 		}
+		*/
 	}
 }
