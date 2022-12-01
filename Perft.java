@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Perft {
-	private int maxPly = 3;
+	private int maxPly = 4;
 	private int nodes = 0;
 	private int captures = 0;
 	private int checks = 0;
@@ -42,13 +42,13 @@ public class Perft {
 		return output;
 	}
 	
-	public void run(Board board, int ply) {
+	public void run(Board board, int ply, String starter) {
 		if (ply == 0) {			
 			if (ply == this.maxPly) {
 				this.nodes += 1;
 			}
 			
-			this.run(board, ply + 1);
+			this.run(board, ply + 1, null);
 		} else {
 			if (ply <= this.maxPly) {
 				Vector<Move> moves = board.getMoves();
@@ -73,6 +73,13 @@ public class Perft {
 							this.perftLog.put(UCIMove, 1);
 						}
 						*/
+						
+						if (this.perftLog.containsKey(starter)) {
+							int newValue = this.perftLog.get(starter) + 1;
+							this.perftLog.put(starter, newValue);
+						} else {
+							this.perftLog.put(starter, 1);
+						}
 						
 						this.nodes += 1;
 						
@@ -99,7 +106,15 @@ public class Perft {
 						}
 					}
 					
-					this.run(boardClone, ply + 1);
+					
+					String newStarter = null;
+					if (starter == null) {
+						newStarter = this.moveToUCI(moves.elementAt(i));
+					} else {
+						newStarter = starter;
+					}
+					
+					this.run(boardClone, ply + 1, newStarter);
 				}
 			}
 		}
