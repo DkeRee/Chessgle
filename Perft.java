@@ -3,10 +3,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Perft {
-	private int maxPly = 7;
+	private int maxPly = 3;
 	private int nodes = 0;
 	private int captures = 0;
 	private int checks = 0;
+	private int rookings = 0;
 	
 	HashMap<String, Integer> perftLog = new HashMap<String, Integer>();
 	
@@ -64,7 +65,6 @@ public class Perft {
 						*/
 						/*
 						String UCIMove = this.moveToUCI(moves.elementAt(i));
-						this.nodes += 1;
 						
 						if (this.perftLog.containsKey(UCIMove)) {
 							int newValue = this.perftLog.get(UCIMove) + 1;
@@ -73,6 +73,22 @@ public class Perft {
 							this.perftLog.put(UCIMove, 1);
 						}
 						*/
+						
+						this.nodes += 1;
+						
+						int piece = moves.elementAt(i).getPiece();
+						if (piece % 10 == 0) {
+							piece /= 10;
+						} else {
+							piece /= 13;
+						}
+						
+						boolean isKing = piece == 6;
+						boolean isRookingAmount = Math.abs(moves.elementAt(i).getTo().getX() - moves.elementAt(i).getFrom().getX()) > 1;
+						
+						if (isKing && isRookingAmount) {
+							this.rookings += 1;
+						}
 						
 						if (moves.elementAt(i).getLoud()) {
 							this.captures += 1;
@@ -99,6 +115,10 @@ public class Perft {
 	
 	public int getChecks() {
 		return this.checks;
+	}
+	
+	public int getRookings() {
+		return this.rookings;
 	}
 	
 	public void printPerftLog() {

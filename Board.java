@@ -27,6 +27,7 @@ public class Board extends BoardBackbone {
 		 */
 		
 		//first back rank of black
+		/*
 		this.board[0][0] = ROOK * BLACK;
 		this.board[0][1] = KNIGHT * BLACK;
 		this.board[0][2] = BISHOP * BLACK;
@@ -55,6 +56,7 @@ public class Board extends BoardBackbone {
 		this.board[7][5] = BISHOP * WHITE;
 		this.board[7][6] = KNIGHT * WHITE;
 		this.board[7][7] = ROOK * WHITE;
+		*/
 	}
 	
 	public Board clone() {
@@ -95,6 +97,133 @@ public class Board extends BoardBackbone {
 		super.blackLeftRookRights = brr;
 		super.blackRightRookRights = blr;
 		this.colorPlaying = colorPlaying;
+	}
+ 	
+	public void parseFen(String fen) {
+		String[] fenParts = fen.split(" ");
+		String fenBoard = fenParts[0];
+		String fenPlay = fenParts[1];
+		String fenRooking = fenParts[2];
+		String fenPassant = fenParts[3];
+		
+		//set side playing
+		if (fenPlay.equals("w")) {
+			this.colorPlaying = WHITE;
+		} else {
+			this.colorPlaying = BLACK;
+		}
+		
+		//set rooking rights
+		if (!fenRooking.equals("-")) {
+			//there is rooking			
+			for (int i = 0; i < fenRooking.length(); i++) {
+				char rookingInfo = fenRooking.charAt(i);
+				if (Character.isUpperCase(rookingInfo)) {
+					//is white
+					super.whiteKingRights = true;
+					
+					if (rookingInfo == 'K') {
+						super.whiteRightRookRights = true;
+					} else if (rookingInfo == 'Q') {
+						super.whiteLeftRookRights = true;
+					}
+				} else {
+					//is black
+					super.blackKingRights = true;
+					
+					if (rookingInfo == 'k') {
+						super.blackRightRookRights = true;
+					} else if (rookingInfo == 'q') {
+						super.blackLeftRookRights = true;
+					}
+				}
+			}
+		} else {
+			super.whiteKingRights = false;
+			super.whiteRightRookRights = false;
+			super.whiteLeftRookRights = false;
+			
+			super.blackKingRights = false;
+			super.blackLeftRookRights = false;
+			super.blackRightRookRights = false;
+		}
+				
+		//set en passant
+		if (!fenPassant.equals("-")) {
+			//there is en passant!
+			super.canEnPassant = true;
+			
+			String letters = "abcdefgh";
+			int offset = 0;
+			if (this.colorPlaying == WHITE) {
+				offset = -1;
+			} else {
+				offset = 1;
+			}
+			
+			super.enPassantColumn = letters.indexOf(String.valueOf(fenPassant.charAt(0)));
+			super.enPassantRow =  (7 - (Integer.parseInt(String.valueOf(fenPassant.charAt(1))) - 1)) + offset;
+		} else {
+			super.canEnPassant = false;
+			super.enPassantColumn = -1;
+			super.enPassantRow = -1;
+		}
+		
+		//set board with fen
+		this.board = new int[8][8];
+		
+		String[] fenBoardRows = fenBoard.split("/");
+		String numbers = "12345678";
+		
+		int boardY = 0;
+		int boardX = 0;
+		for (int i = 0; i < fenBoardRows.length; i++) {
+			String[] tilesArr = fenBoardRows[i].split("");
+			
+			for (int o = 0; o < tilesArr.length; o++) {
+				if (numbers.indexOf(tilesArr[o]) == -1) {
+					//it is a piece and not a number of empty tiles
+					int color = 0;
+					int piece = 0;
+					
+					if (Character.isUpperCase(tilesArr[o].charAt(0))) {
+						color = WHITE;
+					} else {
+						color = BLACK;
+					}
+					
+					switch (tilesArr[o].toLowerCase()) {
+						case "p":
+							piece = PAWN;
+							break;
+						case "n":
+							piece = KNIGHT;
+							break;
+						case "b":
+							piece = BISHOP;
+							break;
+						case "r":
+							piece = ROOK;
+							break;
+						case "q":
+							piece = QUEEN;
+							break;
+						case "k":
+							piece = KING;
+							break;
+					}
+					
+					this.board[boardY][boardX] = piece * color;
+					
+					boardX += 1;
+				} else {
+					boardX += Integer.parseInt(tilesArr[o]);
+				}
+			}
+			
+			boardX = 0;
+			boardY += 1;
+		}		
 	}
 	
 	public boolean isThisChecked() {
