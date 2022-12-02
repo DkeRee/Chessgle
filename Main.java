@@ -5,7 +5,7 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		boolean playing = true;
 		
-		int depth = 4;
+		int depth = 3;
 		Board board = new Board();
 		
 		System.out.println("Welcome to Chessgle!");
@@ -31,13 +31,15 @@ public class Main {
 			String input = scanner.nextLine();
 			
 			if (!input.equals("stop")) {
-				board.playMove(input);
-				playing = board.printState();
+				boolean response = board.playMove(input);
 				
-				System.out.println("Searching...");
-				board.playMoveSelf(engine.searchRoot(board));
-				playing = board.printState();
-				
+				if (response) {
+					playing = board.printState();
+					
+					System.out.println("Searching...");
+					board.playMoveSelf(engine.searchRoot(board));
+					playing = board.printState();	
+				}
 			} else {
 				playing = false;
 			}

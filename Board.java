@@ -349,7 +349,7 @@ public class Board extends BoardBackbone {
 		return null;
 	}
 	
-	public void playMove(String input) {
+	public boolean playMove(String input) {
 		String[] inputArr = input.split("");
 		
 		String letters = "abcdefgh";
@@ -367,9 +367,12 @@ public class Board extends BoardBackbone {
 		if (move != null) {
 			super.playChecked(this.board, move);
 			this.colorPlaying = super.getOppositeColor(this.colorPlaying);
+			return true;
 		} else {
 			System.out.println("This move is invalid.");
 		}
+		
+		return false;
 	}
 	
 	public void playMoveSelf(Move move) {
