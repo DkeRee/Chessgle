@@ -6,11 +6,10 @@ public class Main {
 		boolean playing = true;
 		
 		Board board = new Board();
-		board.parseFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 		
 		//PERFT
-		
-		Perft perft = new Perft();
+		/*
+		Perft perft = new Perft(5);
 		perft.run(board, 0, null);
 		System.out.println("Nodes: " + perft.getNodes());
 		System.out.println("Captures: " + perft.getCaptures());
@@ -18,8 +17,11 @@ public class Main {
 		System.out.println(perft.getChecks());
 		
 		perft.printPerftLog();
+		*/
 		
-		/*
+		
+		
+		
 		while (playing) {
 			System.out.println(board.getMoves());
 			board.printBoard();
@@ -32,6 +34,5 @@ public class Main {
 				playing = false;
 			}
 		}
-		*/
 	}
 }

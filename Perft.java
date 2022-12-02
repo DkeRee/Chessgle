@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Perft {
-	private int maxPly = 4;
+	private int maxPly;
 	private int nodes = 0;
 	private int captures = 0;
 	private int checks = 0;
@@ -11,7 +11,9 @@ public class Perft {
 	
 	HashMap<String, Integer> perftLog = new HashMap<String, Integer>();
 	
-	public Perft() {}
+	public Perft(int maxPly) {
+		this.maxPly = maxPly;
+	}
 	
 	public String moveToUCI(Move move) {
 		String output = "";
@@ -54,8 +56,8 @@ public class Perft {
 				Vector<Move> moves = board.getMoves();
 								
 				for (int i = 0; i < moves.size(); i++) {
-					//store for perft log					
-					Board boardClone = board.clone();
+					//store for perft log	
+					Board boardClone = board.clone();	
 					boardClone.playMoveSelf(moves.elementAt(i));
 					
 					if (ply == this.maxPly) {
@@ -74,6 +76,10 @@ public class Perft {
 						}
 						*/
 						
+						if (this.maxPly == 1) {
+							starter = this.moveToUCI(moves.elementAt(i));
+						}
+						
 						if (this.perftLog.containsKey(starter)) {
 							int newValue = this.perftLog.get(starter) + 1;
 							this.perftLog.put(starter, newValue);
@@ -89,7 +95,7 @@ public class Perft {
 						} else {
 							piece /= 13;
 						}
-						
+				
 						boolean isKing = piece == 6;
 						boolean isRookingAmount = Math.abs(moves.elementAt(i).getTo().getX() - moves.elementAt(i).getFrom().getX()) > 1;
 						

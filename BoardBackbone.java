@@ -40,6 +40,9 @@ public abstract class BoardBackbone {
 			this.blackKingRights,
 			this.blackRightRookRights,
 			this.blackLeftRookRights,
+			this.canEnPassant,
+			this.enPassantRow,
+			this.enPassantColumn,
 			colorPlaying
 		);
 				
@@ -91,18 +94,25 @@ public abstract class BoardBackbone {
 		}
 		
 		//CHECK EN PASSANT
-		if (pieceInfo[0] == PAWN && Math.abs(move.getTo().getY() - move.getFrom().getY()) == 2) {
+		boolean isEnPassantMove = pieceInfo[0] == PAWN && move.getLoud() && board[move.getTo().getY()][move.getTo().getX()] == NONE;
+		boolean canPassant = pieceInfo[0] == PAWN && Math.abs(move.getTo().getY() - move.getFrom().getY()) == 2;
+		if (canPassant) {
 			//set row
 			//if it is a pawn and the pawn moves 2 squares forward for the first time, it has a chance of being en passant
 			this.canEnPassant = true;
 			this.enPassantRow = move.getTo().getY();
 			this.enPassantColumn = move.getTo().getX();
-		} else {
-			//remove info
+		} else if (!isEnPassantMove) {
+			//remove info right here if this isn't an en passanting move
 			this.canEnPassant = false;
 		}
-				
+		
 		this.playUnchecked(board, move);
+				
+		if (!canPassant && isEnPassantMove) {
+			//remove info after you play the move if it is en passant or else it will interfere
+			this.canEnPassant = false;
+		}
 	}
 	
 	public void playUnchecked(int[][] board, Move move) {
@@ -148,7 +158,7 @@ public abstract class BoardBackbone {
 					
 					//remove enemy pawn
 					board[this.enPassantRow][this.enPassantColumn] = NONE;
-					
+															
 					//perform capture
 					board[move.getTo().getY()][move.getTo().getX()] = move.getPiece();
 				} else {
@@ -460,7 +470,7 @@ public abstract class BoardBackbone {
 			stepForwardDouble = 2;
 			firstRank = 1;
 			stepForward = 1;
-			promotionRank = 8;
+			promotionRank = 7;
 			
 			loudTo[0] = new Square(from.getX() - 1, from.getY() + 1);
 			loudTo[1] = new Square(from.getX() + 1, from.getY() + 1);
@@ -1036,18 +1046,22 @@ public abstract class BoardBackbone {
 					//if our rook is still here
 					Square leftOne = new Square(from.getX() - 1, from.getY());
 					Square leftTwo = new Square(from.getX() - 2, from.getY());
+					Square leftThree = new Square(from.getX() - 3, from.getY());
 					
-					if (board[leftOne.getY()][leftOne.getX()] == NONE && board[leftTwo.getY()][leftTwo.getX()] == NONE) {
+					if (board[leftOne.getY()][leftOne.getX()] == NONE && board[leftTwo.getY()][leftTwo.getX()] == NONE && board[leftThree.getY()][leftThree.getX()] == NONE) {						
 						//if there is nothing in the way
 						Move one = new Move(from, leftOne, piece, false);
 						Move two = new Move(from, leftTwo, piece, false);
+						Move three = new Move(from, leftThree, piece, false);
 						
 						Board boardCloneOne = this.upperClone(board, ourColor);
 						Board boardCloneTwo = this.upperClone(board, ourColor);
+						Board boardCloneThree = this.upperClone(board, ourColor);
 						
 						this.playUnchecked(boardCloneOne.getBoard(), one);
 						this.playUnchecked(boardCloneTwo.getBoard(), two);
-						
+						this.playUnchecked(boardCloneThree.getBoard(), three);
+																		
 						if (
 							!this.isChecked(boardCloneOne.getBoard(), ourColor)	
 							&& !this.isChecked(boardCloneTwo.getBoard(), ourColor)) {

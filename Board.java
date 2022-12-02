@@ -9,7 +9,7 @@ public class Board extends BoardBackbone {
 		this.setup();
 	}
 	
-	public void setup() {
+	public void setup() {	
 		/*
 		super.whiteKingRights = false;
 		super.whiteLeftRookRights = false;
@@ -19,15 +19,17 @@ public class Board extends BoardBackbone {
 		super.blackLeftRookRights = false;
 		super.blackRightRookRights = false;
 		
-		//this.board[1][1] = PAWN * BLACK;
-		//this.board[4][5] = BISHOP * WHITE;
-		//this.board[5][4] = BISHOP * BLACK;
-		//this.board[4][2] = PAWN * WHITE;
-		//this.board[7][7] = KING * WHITE;
-		 */
+		this.board[1][0] = PAWN * BLACK;
+		this.board[4][1] = PAWN * WHITE;
+		*/
+		
+		this.board[1][1] = PAWN * BLACK;
+		this.board[4][5] = BISHOP * WHITE;
+		this.board[5][4] = BISHOP * BLACK;
+		this.board[4][2] = PAWN * WHITE;
+		this.board[7][7] = KING * WHITE;
 		
 		//first back rank of black
-		/*
 		this.board[0][0] = ROOK * BLACK;
 		this.board[0][1] = KNIGHT * BLACK;
 		this.board[0][2] = BISHOP * BLACK;
@@ -56,7 +58,6 @@ public class Board extends BoardBackbone {
 		this.board[7][5] = BISHOP * WHITE;
 		this.board[7][6] = KNIGHT * WHITE;
 		this.board[7][7] = ROOK * WHITE;
-		*/
 	}
 	
 	public Board clone() {
@@ -67,8 +68,11 @@ public class Board extends BoardBackbone {
 			super.whiteRightRookRights,
 			super.whiteLeftRookRights,
 			super.blackKingRights,
-			super.blackRightRookRights,
 			super.blackLeftRookRights,
+			super.blackRightRookRights,
+			super.canEnPassant,
+			super.enPassantRow,
+			super.enPassantColumn,
 			this.colorPlaying
 		);
 				
@@ -88,7 +92,7 @@ public class Board extends BoardBackbone {
 		}
 	}
 	
-	public void setRights(boolean wks, boolean wrr, boolean wlr, boolean bks, boolean brr, boolean blr, int colorPlaying) {
+	public void setRights(boolean wks, boolean wrr, boolean wlr, boolean bks, boolean brr, boolean blr, boolean canEnPassant, int enPassantRow, int enPassantColumn, int colorPlaying) {
 		super.whiteKingRights = wks;
 		super.whiteRightRookRights = wrr;
 		super.whiteLeftRookRights = wlr;
@@ -96,6 +100,9 @@ public class Board extends BoardBackbone {
 		super.blackKingRights = bks;
 		super.blackLeftRookRights = brr;
 		super.blackRightRookRights = blr;
+		super.canEnPassant = canEnPassant;
+		super.enPassantColumn = enPassantColumn;
+		super.enPassantRow = enPassantRow;
 		this.colorPlaying = colorPlaying;
 	}
  	
@@ -113,6 +120,13 @@ public class Board extends BoardBackbone {
 			this.colorPlaying = BLACK;
 		}
 		
+		super.whiteKingRights = false;
+		super.whiteRightRookRights = false;
+		super.whiteLeftRookRights = false;
+		
+		super.blackKingRights = false;
+		super.blackLeftRookRights = false;
+		super.blackRightRookRights = false;
 		//set rooking rights
 		if (!fenRooking.equals("-")) {
 			//there is rooking			
@@ -156,9 +170,9 @@ public class Board extends BoardBackbone {
 			String letters = "abcdefgh";
 			int offset = 0;
 			if (this.colorPlaying == WHITE) {
-				offset = -1;
-			} else {
 				offset = 1;
+			} else {
+				offset = -1;
 			}
 			
 			super.enPassantColumn = letters.indexOf(String.valueOf(fenPassant.charAt(0)));
@@ -223,7 +237,7 @@ public class Board extends BoardBackbone {
 			
 			boardX = 0;
 			boardY += 1;
-		}		
+		}
 	}
 	
 	public boolean isThisChecked() {
