@@ -1,6 +1,10 @@
 import java.util.Vector;
 
 public abstract class BoardBackbone {
+	final static int CHECKMATE = 100;
+	final static int STALEMATE = 90;
+	final static int ONGOING = 80;
+	
 	final static int WHITE = 10;
 	final static int BLACK = 13;
 	

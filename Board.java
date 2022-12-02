@@ -22,13 +22,6 @@ public class Board extends BoardBackbone {
 		this.board[1][0] = PAWN * BLACK;
 		this.board[4][1] = PAWN * WHITE;
 		*/
-		
-		this.board[1][1] = PAWN * BLACK;
-		this.board[4][5] = BISHOP * WHITE;
-		this.board[5][4] = BISHOP * BLACK;
-		this.board[4][2] = PAWN * WHITE;
-		this.board[7][7] = KING * WHITE;
-		
 		//first back rank of black
 		this.board[0][0] = ROOK * BLACK;
 		this.board[0][1] = KNIGHT * BLACK;
@@ -90,6 +83,31 @@ public class Board extends BoardBackbone {
 				this.board[y][x] = piece;
 			}
 		}
+	}
+	
+	public int getState() {
+		Vector<Move> totalMoves = this.getMoves();
+			
+		boolean inCheck = this.isThisChecked();
+		if (totalMoves.size() == 0 && inCheck) {
+			return CHECKMATE;
+		} else if (totalMoves.size() == 0 && !inCheck) {
+			return STALEMATE;
+		}
+		
+		return ONGOING;
+	}
+	
+	public boolean printState() {
+		if (this.getState() == 100) {
+			System.out.println("Checkmate!");
+			return false;
+		} else if (this.getState() == 90) {
+			System.out.println("Stalemate!");
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public void setRights(boolean wks, boolean wrr, boolean wlr, boolean bks, boolean brr, boolean blr, boolean canEnPassant, int enPassantRow, int enPassantColumn, int colorPlaying) {

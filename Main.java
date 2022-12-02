@@ -5,7 +5,13 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		boolean playing = true;
 		
+		int depth = 4;
 		Board board = new Board();
+		
+		System.out.println("Welcome to Chessgle!");
+		System.out.println("Searching at a depth of " + depth);
+		
+		Engine engine = new Engine(depth);
 		
 		//PERFT
 		/*
@@ -19,17 +25,19 @@ public class Main {
 		perft.printPerftLog();
 		*/
 		
-		
-		
-		
 		while (playing) {
-			System.out.println(board.getMoves());
 			board.printBoard();
 			
 			String input = scanner.nextLine();
 			
 			if (!input.equals("stop")) {
 				board.playMove(input);
+				playing = board.printState();
+				
+				System.out.println("Searching...");
+				board.playMoveSelf(engine.searchRoot(board));
+				playing = board.printState();
+				
 			} else {
 				playing = false;
 			}
