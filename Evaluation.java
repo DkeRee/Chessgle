@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 abstract public class Evaluation {
 	final static int WHITE = 10;
 	final static int BLACK = 13;

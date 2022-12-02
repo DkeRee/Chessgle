@@ -170,14 +170,6 @@ public class Board extends BoardBackbone {
 					}
 				}
 			}
-		} else {
-			super.whiteKingRights = false;
-			super.whiteRightRookRights = false;
-			super.whiteLeftRookRights = false;
-			
-			super.blackKingRights = false;
-			super.blackLeftRookRights = false;
-			super.blackRightRookRights = false;
 		}
 				
 		//set en passant

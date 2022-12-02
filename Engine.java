@@ -50,6 +50,8 @@ public class Engine extends Evaluation {
 			}
 		}
 		
+		System.out.println(alpha);
+		
 		return bestMove;
 	}
 	
