@@ -296,6 +296,8 @@ public class Board extends BoardBackbone {
 			}
 		}
 		
+		super.sortMoves(moves);
+		
 		return moves;
 	}
 	

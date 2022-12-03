@@ -53,6 +53,26 @@ public abstract class BoardBackbone {
 		return newBoard;
 	}
 	
+	public void sortMoves(Vector<Move> moves) {
+		Vector<Move> sortedMoves = new Vector<Move>();
+		
+		for (int i = 0; i < moves.size(); i++) {
+			Move move = moves.elementAt(i);
+			
+			if (move.getLoud()) {
+				sortedMoves.add(move);
+			}
+		}
+		
+		for (int i = 0; i < moves.size(); i++) {
+			Move move = moves.elementAt(i);
+			
+			if (!move.getLoud()) {
+				sortedMoves.add(move);
+			}
+		}
+	}
+	
 	public int[] getPieceInfo(int piece) {
 		int[] info = new int[2];
 		

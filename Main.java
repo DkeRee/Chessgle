@@ -5,13 +5,11 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		boolean playing = true;
 		
-		int depth = 2;
 		Board board = new Board();
 		
 		System.out.println("Welcome to Chessgle!");
-		System.out.println("Searching at a depth of " + depth);
 		
-		Engine engine = new Engine(depth);
+		Engine engine = new Engine(4);
 		
 		//PERFT
 		/*
@@ -35,6 +33,16 @@ public class Main {
 				
 				if (response) {
 					playing = board.printState();
+
+					//poor attempt at smart searching
+					int size = board.getMoves().size();
+					if (size <= 10) {
+						engine = new Engine(4);
+					} else if (size <= 30) {
+						engine = new Engine(3);
+					} else {
+						engine = new Engine(2);
+					}
 					
 					System.out.println("Searching...");
 					board.playMoveSelf(engine.searchRoot(board));
