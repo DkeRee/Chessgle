@@ -7,7 +7,7 @@ public class Main {
 		
 		int depth = 2;
 		Board board = new Board();
-				
+		
 		System.out.println("Welcome to Chessgle!");
 		System.out.println("Searching at a depth of " + depth);
 		

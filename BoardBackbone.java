@@ -177,7 +177,7 @@ public abstract class BoardBackbone {
 		//set up method to get my piece and enemy piece
 		int myPiece = color;
 		int enemyPiece = this.getOppositeColor(color);
-
+		
 		//my king
 		Square kingSquare = new Square(0, 0);
 		for (int y = 0; y < board.length; y++) {
@@ -193,7 +193,7 @@ public abstract class BoardBackbone {
 				}
 			}
 		}
-		
+				
 		//expand from king in all directions, checking for possible check
 		
 		//north

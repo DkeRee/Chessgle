@@ -1,7 +1,7 @@
 import java.util.Vector;
 
 public class Board extends BoardBackbone {
-	private int colorPlaying = WHITE;
+	private int colorPlaying = BLACK;
 	private int[][] board;
 	
 	public Board() {
@@ -251,7 +251,7 @@ public class Board extends BoardBackbone {
 	}
 	
 	public boolean isThisChecked() {
-		return super.isChecked(this.board, WHITE);
+		return super.isChecked(this.board, this.colorPlaying);
 	}
 	
 	public void pushPieceMoves(int[][] board, int piece, Vector<Move> moves, Square from) {
