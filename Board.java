@@ -1,7 +1,7 @@
 import java.util.Vector;
 
 public class Board extends BoardBackbone {
-	private int colorPlaying = BLACK;
+	private int colorPlaying = WHITE;
 	private int[][] board;
 	
 	public Board() {
