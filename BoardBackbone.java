@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Vector;
 
 public abstract class BoardBackbone {
@@ -30,6 +31,17 @@ public abstract class BoardBackbone {
 	protected int enPassantRow = -1;
 	protected int enPassantColumn = -1;
 	
+	//MVV_LVA Sorting
+	private int[] MVV_LVA = {
+		    0, 0, 0, 0, 0, 0, 0,       // victim K, attacker K, Q, R, B, N, P, None
+		    50, 51, 52, 53, 54, 55, 0, // victim Q, attacker K, Q, R, B, N, P, None
+		    40, 41, 42, 43, 44, 45, 0, // victim R, attacker K, Q, R, B, N, P, None
+		    30, 31, 32, 33, 34, 35, 0, // victim B, attacker K, Q, R, B, N, P, None
+		    20, 21, 22, 23, 24, 25, 0, // victim N, attacker K, Q, R, B, N, P, None
+		    10, 11, 12, 13, 14, 15, 0, // victim P, attacker K, Q, R, B, N, P, None
+		    0, 0, 0, 0, 0, 0, 0       // victim None, attacker K, Q, R, B, N, P, None	
+	};
+	
 	public int getOppositeColor(int color) {
 		return color == WHITE ? BLACK : WHITE;
 	}
@@ -53,9 +65,42 @@ public abstract class BoardBackbone {
 		return newBoard;
 	}
 	
-	public void sortMoves(Vector<Move> moves) {
-		Vector<Move> sortedMoves = new Vector<Move>();
+	public int convertToLVA(int piece) {
+		int[] pieceInfo = this.getPieceInfo(piece);
 		
+		int result = 0;
+		
+		switch (pieceInfo[0]) {
+			case KING:
+				result = 0;
+				break;
+			case QUEEN:
+				result = 1;
+				break;
+			case ROOK:
+				result = 2;
+				break;
+			case BISHOP:
+				result = 3;
+				break;
+			case KNIGHT:
+				result = 4;
+				break;
+			case PAWN:
+				result = 5;
+				break;
+		}
+		
+		return result;
+	}
+	
+	public int MVV_LVA_SCORE(int victim, int attacker) {
+		return this.MVV_LVA[(this.convertToLVA(attacker) * 7) + this.convertToLVA(victim)];
+	}
+	
+	public void sortMoves(Vector<Move> moves, int[][] board) {
+		Vector<Move> sortedMoves = new Vector<Move>();
+				
 		for (int i = 0; i < moves.size(); i++) {
 			Move move = moves.elementAt(i);
 			
@@ -64,11 +109,36 @@ public abstract class BoardBackbone {
 			}
 		}
 		
+		//sort loud moves
+		Vector<Move> sortedMovesNew = new Vector<Move>(sortedMoves.size());
+		SortedMove[] sortedMovesOld = new SortedMove[sortedMoves.size()];
+		int[] sortedMoveInd = new int[sortedMoves.size()];
+		
+		//load both parallel old and new move arrays
+		for (int i = 0; i < sortedMoves.size(); i++) {
+			Move move = sortedMoves.elementAt(i);
+			int score = this.MVV_LVA_SCORE(board[move.getTo().getY()][move.getTo().getX()], move.getPiece());
+			
+			sortedMovesOld[i] = new SortedMove(move, score);
+			sortedMoveInd[i] = score;
+		}
+		
+		Arrays.sort(sortedMoveInd);
+		
+		for (int i = sortedMoveInd.length - 1; i > -1; i--) {
+			for (int o = 0; o < sortedMovesOld.length; o++) {
+				if (sortedMoveInd[i] == sortedMovesOld[o].getScore()) {
+					sortedMovesNew.add(sortedMovesOld[o].getMove());
+					break;
+				}
+			}
+		}
+				
 		for (int i = 0; i < moves.size(); i++) {
 			Move move = moves.elementAt(i);
 			
 			if (!move.getLoud()) {
-				sortedMoves.add(move);
+				sortedMovesNew.add(move);
 			}
 		}
 	}

@@ -38,7 +38,7 @@ public class Main {
 					int size = board.getMoves().size();
 					if (size <= 10) {
 						engine = new Engine(4);
-					} else if (size <= 35) {
+					} else if (size <= 33) {
 						engine = new Engine(3);
 					} else {
 						engine = new Engine(2);
