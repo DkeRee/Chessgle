@@ -49,9 +49,7 @@ public class Engine extends Evaluation {
 				bestMove = move;
 			}
 		}
-		
-		System.out.println(alpha);
-		
+				
 		return bestMove;
 	}
 	

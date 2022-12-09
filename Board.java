@@ -380,39 +380,50 @@ public class Board extends BoardBackbone {
 	
 	public void printBoard() {
 		for (int y = 0; y < this.board.length; y++) {
-			for (int x = 0; x < this.board[y].length; x++) {
-				int piece = this.board[y][x];
+			for (int x = -1; x < this.board[y].length; x++) {
 				
-				int[] pieceInfo = super.getPieceInfo(piece);
-				boolean isWhite = pieceInfo[1] == WHITE;
-				
-				switch (pieceInfo[0]) {
-					case NONE:
-						System.out.print(super.getNoneAscii());
-						break;
-					case PAWN:
-						System.out.print(super.getPawnAscii(isWhite));
-						break;
-					case KNIGHT:
-						System.out.print(super.getKnightAscii(isWhite));
-						break;
-					case BISHOP:
-						System.out.print(super.getBishopAscii(isWhite));
-						break;
-					case ROOK:
-						System.out.print(super.getRookAscii(isWhite));
-						break;
-					case QUEEN:
-						System.out.print(super.getQueenAscii(isWhite));
-						break;
-					case KING:
-						System.out.print(super.getKingAscii(isWhite));
-						break;
+				if (x == -1) {
+					System.out.print(8 - y + " ");
+				} else {
+					int piece = this.board[y][x];
+					
+					int[] pieceInfo = super.getPieceInfo(piece);
+					boolean isWhite = pieceInfo[1] == WHITE;
+					
+					switch (pieceInfo[0]) {
+						case NONE:
+							System.out.print(super.getNoneAscii());
+							break;
+						case PAWN:
+							System.out.print(super.getPawnAscii(isWhite));
+							break;
+						case KNIGHT:
+							System.out.print(super.getKnightAscii(isWhite));
+							break;
+						case BISHOP:
+							System.out.print(super.getBishopAscii(isWhite));
+							break;
+						case ROOK:
+							System.out.print(super.getRookAscii(isWhite));
+							break;
+						case QUEEN:
+							System.out.print(super.getQueenAscii(isWhite));
+							break;
+						case KING:
+							System.out.print(super.getKingAscii(isWhite));
+							break;
+					}
+					
+					System.out.print(" ");
 				}
-				
-				System.out.print(" ");
 			}
 			System.out.println();
+		}
+		
+		String letters = " abcdefgh";
+		
+		for (int i = 0; i < letters.length(); i++) {
+			System.out.print(letters.charAt(i) + " ");
 		}
 		
 		System.out.println();
