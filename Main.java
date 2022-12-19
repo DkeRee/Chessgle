@@ -43,10 +43,12 @@ public class Main {
 					} else {
 						engine = new Engine(2);
 					}
-					
-					System.out.println("Searching...");
-					board.playMoveSelf(engine.searchRoot(board));
-					playing = board.printState();	
+				
+					if (playing) {
+						System.out.println("Searching...");
+						board.playMoveSelf(engine.searchRoot(board));
+						playing = board.printState();	
+					}
 				}
 			} else {
 				playing = false;
