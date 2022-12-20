@@ -47,8 +47,8 @@ public class Main {
 					if (playing) {
 						System.out.println("Searching...");
 						board.playMoveSelf(engine.searchRoot(board));
-						playing = board.printState();
-						
+						playing = board.printState();						
+					} else {
 						board.printBoard();
 					}
 				}
