@@ -11,7 +11,7 @@ public class Main {
 		
 		Engine engine = new Engine(4);
 		
-		//PERFT
+		//PERFT FOR DEBUG
 		/*
 		Perft perft = new Perft(5);
 		perft.run(board, 0, null);

@@ -61,6 +61,7 @@ public class Perft {
 					boardClone.playMoveSelf(moves.elementAt(i));
 					
 					if (ply == this.maxPly) {
+						//ignore! extra perft logs...
 						/*
 							System.out.println(moves.elementAt(i));
 							boardClone.printBoard();
